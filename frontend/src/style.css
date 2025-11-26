@@ -1,0 +1,132 @@
+html {
+    text-align: center;
+    color: black;
+    background-color: white;
+}
+
+body {
+    margin: 0;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+@font-face {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""),
+    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+}
+
+#app {
+    height: 100vh;
+    text-align: center;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.section {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+}
+
+.section:last-child {
+    border-right: none;
+}
+
+.table-container {
+    margin-bottom: 20px;
+}
+
+.table-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+th, td {
+    border: 1px solid #999;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+input[type="text"] {
+    width: 80%;
+    border: none;
+    padding: 4px;
+    background: transparent;
+}
+
+input:disabled {
+    color: black;
+}
+
+textarea {
+    width: 80%;
+    height: 100px;
+    padding: 8px;
+    margin-bottom: 15px;
+    resize: vertical;
+}
+
+button {
+    padding: 10px 15px;
+    color: black;
+    border: 2px solid black;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: auto;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+}
+
+select {
+    padding: 8px;
+    width: 80%;
+    margin-top: 5px;
+}
+
+.help_table input, .tsi_table input {
+    font-weight: 700;
+}
+
+#user_code_input {
+    height: 400px;
+    font-size: 18px;
+}
+
+.error-animation {
+    border: 5px solid #ff0000 !important;
+    border-radius: 15px;
+    transition: all 0.3s ease-in-out;
+}
