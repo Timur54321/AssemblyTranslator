@@ -60,13 +60,22 @@ export class CommandHandler {
 
                 return stringToReturn;
             case 4:
-                // 1) Check if operand is metka
-                // 1.1) or operand is integer (0-16777254)
                 if (line[2]) {
                     handleError(`Указан лишний операнд ${line[2]}`);
+                    return -1;
                 }
 
-                if (isValidMetkaName(line[1], config)) {
+                let isvalid;
+                if (config.mode == 1) {
+                    isvalid = isValidMetkaName(line[1], config);
+                }
+                if (config.mode == 2) {
+                    isvalid = line[1][0] == "[" && isValidMetkaName(line[1].substring(1, line[1].length-1), config) && line[1][line[1].length-1] == "]";
+                }
+                if (config.mode == 3) {
+                    isvalid = (isValidMetkaName(line[1], config)) || (line[1][0] == "[" && isValidMetkaName(line[1].substring(1, line[1].length-1), config) && line[1][line[1].length-1] == "]");
+                }
+                if (isvalid) {
                     size = parseInt(commandLine[1])*4+1;
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} METKA${line[1]}`;
                     config.ip = incrementHex(config.ip, 4);
@@ -167,20 +176,29 @@ export class CommandHandler {
 
                 return stringToReturn;
             case 4:
-                // 1) Check if operand is metka
-                // 1.1) or operand is integer (0-16777254)
                 if (line[3]) {
                     handleError(`Указан лишний операнд ${line[3]}`);
+                    return -1;
                 }
 
-                if (isValidMetkaName(line[2], config)) {
+                let isvalid;
+                if (config.mode == 1) {
+                    isvalid = isValidMetkaName(line[2], config);
+                }
+                if (config.mode == 2) {
+                    isvalid = line[2][0] == "[" && isValidMetkaName(line[2].substring(1, line[2].length-1), config) && line[2][line[2].length-1] == "]";
+                }
+                if (config.mode == 3) {
+                    isvalid = (isValidMetkaName(line[2], config)) || (line[2][0] == "[" && isValidMetkaName(line[2].substring(1, line[2].length-1), config) && line[2][line[2].length-1] == "]");
+                }
+                if (isvalid) {
                     size = parseInt(commandLine[1])*4+1;
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} METKA${line[2]}`;
                     config.ip = incrementHex(config.ip, 4);
                     if (config.ip == -1) {
                         return -1;
                     }
-                } else if (Integer.isInteger(isConvertibleToInteger(line[2]))) {
+                } else if (Number.isInteger(isConvertibleToInteger(line[2]))) {
                     if (isConvertibleToInteger(line[2]) > 16777215) {
                         handleError(`Произошло переполнение памяти. Некорректно указан операнд ${line[2]}`);
                         return -1;

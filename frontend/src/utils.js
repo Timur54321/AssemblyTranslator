@@ -32,16 +32,11 @@ export function handleError(message, second = false) {
 
         setTimeout(() => {
             document.querySelector("#errors_block_1").classList.remove('error-animation');
-        }, 500)
+        }, 500);
     }
 }
 
 export function clearTables() {
-    for (let i = 0; i < 20; i++) {
-        for(let j = 0; j < 4; j++) {
-            document.querySelector(`.helpCell_${i+1}_${j+1}`).value = "";
-        }
-    }
     for (let i = 0; i < 11; i++) {
         for(let j = 0; j < 2; j++) {
             document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
@@ -49,7 +44,6 @@ export function clearTables() {
     }
 
     document.querySelector("#errors_block_1").value = "";
-    document.querySelector("#errors_block_2").value = "";
     document.querySelector("#final_code").value = "";
 }
 

@@ -26,7 +26,44 @@ config.secondButton.addEventListener("click", () => {
     config.reset();
     outputHandler.reset();
     clearTables();
-})
+});
+
+config.circle.addEventListener("click", () => {
+    config.reset();
+    outputHandler.reset();
+    clearTables();
+    config.currentUserCode = tableReader.readUserCode();
+    config.currentOperTable = tableReader.raedCommandTable(config);
+
+    if (config.currentUserCode == -1 || config.currentOperTable == -1) {
+        return;
+    }
+    
+    while (!config.finished) {
+        let result = executeLine();
+        if (result == -1) {
+            config.finished = true;
+        }
+        console.log("executing line...");
+    }
+});
+
+config.menu.addEventListener("change", function() {
+    config.mode = parseInt(this.value);
+    switch(config.mode) {
+        case 1:
+            document.querySelector("#user_code_input").value = config.defaultStringExample;
+            break;
+        case 2:
+            document.querySelector("#user_code_input").value = config.defaultStringExampleOtn;
+            break;
+        case 3:
+            document.querySelector("#user_code_input").value = config.defaultStringExampleSmeh;
+            break;
+        default:
+            break;
+    }
+});
 
 function executeLine() {
     if (config.finished) {
@@ -35,11 +72,10 @@ function executeLine() {
     if (config.counter == 0) {
         clearTables();
         let result = rowHandler.isValidStartLine(config);
-        console.log(result);
         if (result == -1) {
             config.reset();
             outputHandler.reset();
-            return;
+            return -1;
         }
         // TODO: Write current line to the output box
         outputHandler.pushFirstLine(config.programName, config.programStart);
@@ -51,14 +87,14 @@ function executeLine() {
             handleError('Не найдена директива END');
             config.reset();
             outputHandler.reset();
-            return;
+            return -1;
         }
         if (config.currentUserCode[config.counter][0]?.toUpperCase() == "END") {
             let result = outputHandler.checkStats(config.currentTsiNames);
             if (result == -1) {
                 config.reset();
                 outputHandler.reset();
-                return;
+                return -1;
             }
 
             outputHandler.pushLastLine(config);
@@ -69,7 +105,7 @@ function executeLine() {
             if (result == -1) {
                 config.reset();
                 outputHandler.reset();
-                return;
+                return -1;
             }
 
             // TODO: Write ouput handler 

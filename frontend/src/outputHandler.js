@@ -1,4 +1,4 @@
-import { decrementHex } from "./hexHandler";
+import { decrementHex, hexSubtract, to3ByteHex } from "./hexHandler";
 import { handleError, isValidMetkaName } from "./utils";
 
 export class OutputHandler {
@@ -26,27 +26,59 @@ export class OutputHandler {
 
     checkSuspicious(config) {
         for (let i = 0; i < this.suspiciousValues.length; i++) {
-            let foundElement = config.currentTsiNames.find(el => el[0] == this.suspiciousValues[i].value);
+            let mode = 1;
+            let ip;
+            let foundElement = config.currentTsiNames.find(el => {
+                if (el[0] == this.suspiciousValues[i].value) {
+                    if (this.suspiciousValues[i].ip) {
+                        mode = 2;
+                        ip = this.suspiciousValues[i].ip;
+                    }
+                    return true;
+                }
+            });
             if (foundElement) {
-                let ind = this.suspiciousValues[i].ind
-                this.allLines[ind][this.allLines[ind].length-1] = foundElement[1];
+                let ind = this.suspiciousValues[i].ind;
+                if (mode == 1) {
+                    this.allLines[ind][this.allLines[ind].length-1] = foundElement[1];
+                } else {
+                    this.allLines[ind][this.allLines[ind].length-1] = to3ByteHex(hexSubtract(ip, "4", foundElement[1]));
+                }
             }
         }
     }
 
     pushLine(line, config) {
-        console.log(line);
         let printLine = line.split(' ');
         let splitLine = line.split(" ").reverse()[0];
         if (splitLine.startsWith("METKA")) {
+            let mode = 1;
+            let search;
             splitLine = splitLine.substring(5);
-            this.used.push(splitLine);
-            let search = config.currentTsiNames.find(el => el[0] == splitLine);
+
+            if (splitLine[0]=="[") {
+                mode = 2;
+                this.used.push(splitLine.substring(1, splitLine.length-1));
+                search = config.currentTsiNames.find(el => el[0] == splitLine.substring(1, splitLine.length-1));
+            }
+            else {
+                this.used.push(splitLine);
+                search = config.currentTsiNames.find(el => el[0] == splitLine);
+            }
+
             if (!search) {
-                this.suspiciousValues.push({
-                    ind: this.currentLine,
-                    value: splitLine
-                });
+                if (mode == 1) {
+                    this.suspiciousValues.push({
+                        ind: this.currentLine,
+                        value: splitLine
+                    });
+                } else {
+                    this.suspiciousValues.push({
+                        ind: this.currentLine,
+                        value: splitLine.substring(1, splitLine.length-1),
+                        ip: printLine[1],
+                    });
+                }
                 printLine = line.split(' ');
                 printLine.pop();
                 printLine.push("FFFFFF");
@@ -54,7 +86,12 @@ export class OutputHandler {
             else {
                 printLine = line.split(' ');
                 printLine.pop();
-                printLine.push(search[1]);
+
+                if (mode == 1) {
+                    printLine.push(search[1]);
+                } else {
+                    printLine.push(to3ByteHex(hexSubtract(printLine[1], "4", search[1])));
+                }
             }
         }
         this.checkSuspicious(config);

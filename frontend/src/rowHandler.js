@@ -30,8 +30,8 @@ export class RowHandler {
 
         // 3) Check if third value exists and equals to Integer (0-16777542)
         let programStart = isConvertibleToInteger(line[2]);
-        if (programStart && programStart <= 16777215) {
-            config.programStart = programStart;
+        if (programStart == 0 || line[2] == undefined) {
+            config.programStart = 0;
         }
         else {
             handleError("Некорректно задан адрес начала программы");
@@ -39,7 +39,7 @@ export class RowHandler {
         }
 
         config.programName = line[0];
-        config.ip = programStart.toString(16).padStart(6, '0');
+        config.ip = "000000";
         return `H ${line[0]} ${programStart}`;
     }
 
@@ -69,5 +69,8 @@ export class RowHandler {
         if (datatypeAsValue) {
             return this.dataTypeHandler.handle(line, config);
         }
+
+        handleError(`Запись ${line[0]} не определена как команда или директива. Проверьте правильность написания команды или директивы`);
+        return -1;
     }
 }

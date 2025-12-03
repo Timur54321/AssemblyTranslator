@@ -2,7 +2,7 @@ export class AssemblerConfig {
     directives = ["START", "END", "RESW", "RESB"];
     dataTypes = ["WORD", "BYTE"];
     defaultStringExample = 
-`PROG START 100h
+`PROG START
 H2 BYTE 2
 JMP L1
 A1 RESB 10
@@ -19,8 +19,46 @@ SAVER1 B1
 INT 200
 NOP
 END`;
+    defaultStringExampleOtn = 
+`PROG START
+H2 BYTE 2
+JMP [L1]
+A1 RESB 10
+A2 RESW 20
+B1 WORD 4096
+B2 BYTE X"2F4C008A"
+B3 BYTE C"Hello!"
+B4 BYTE 128
+L1 LOADR1 [B1]
+LOADR2 [B4]
+ADD R1 R2
+SUB R1 R2
+SAVER1 [B1]
+INT 200
+NOP
+END`;
+    defaultStringExampleSmeh = 
+`PROG START
+H2 BYTE 2
+JMP [L1]
+A1 RESB 10
+A2 RESW 20
+B1 WORD 4096
+B2 BYTE X"2F4C008A"
+B3 BYTE C"Hello!"
+B4 BYTE 128
+L1 LOADR1 B1
+LOADR2 B4
+ADD R1 R2
+SUB R1 R2
+SAVER1 [B1]
+INT 200
+NOP
+END`;
     firstButton = document.querySelector(".firstButton");
     secondButton = document.querySelector("#second_gothrough");
+    circle = document.querySelector(".circle");
+    menu = document.querySelector("#adressFormat");
 
     RtoVal = {
         "R1": "0",
@@ -52,6 +90,7 @@ END`;
         this.currentUserCode = null;
         this.currentOperTable = null;
         this.finished = false;
+        this.mode = 1;                  // 1-прямая; 2-относительная; 3-смешанная
         this.defaultOperations = [
             ["JMP", "1", "4"],
             ["LOADR1", "2", "4"],
