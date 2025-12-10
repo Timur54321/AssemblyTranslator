@@ -85,6 +85,7 @@ END`;
         this.tsiCounter = 0;
         this.currentTsiNames = [];
         this.ocell_counter = 15;
+        this.toDisplay = [];
         this.currentUserCode = null;
         this.currentOperTable = null;
         this.finished = false;
@@ -129,6 +130,7 @@ END`;
         this.ocell_counter = 15;
         this.currentUserCode = null;
         this.currentOperTable = null;
+        this.toDisplay = [];
         this.finished = false;
         this.nastroikiText = "";
     }

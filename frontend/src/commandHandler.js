@@ -15,6 +15,10 @@ export class CommandHandler {
                     return -1;
                 }
                 size = parseInt(commandLine[1])*4;
+                if (size > 255) {
+                    handleError("Произошло переполнение памяти при расчете кода операции");
+                    return -1;
+                }
                 stringToReturn = `T ${config.ip} 01 ${size.toString(16).padStart(2, '0')}`;
                 config.ip = incrementHex(config.ip, 1);
                 if (config.ip == -1) {
@@ -47,6 +51,10 @@ export class CommandHandler {
                         return -1;
                     }
                     size = parseInt(commandLine[1])*4;
+                    if (size > 255) {
+                        handleError("Произошло переполнение памяти при расчете кода операции");
+                        return -1;
+                    }
                     stringToReturn = `T ${config.ip} 02 ${size.toString(16).padStart(2, '0')} ${isConvertibleToInteger(line[1]).toString(16).padStart(2, '0')}`;
                     config.ip = incrementHex(config.ip, 2);
                     if (config.ip == -1) {
@@ -78,9 +86,17 @@ export class CommandHandler {
                 if (isvalid) {
                     if (line[1][0] == "[") {
                         size = parseInt(commandLine[1])*4+2;
+                        if (size > 255) {
+                            handleError("Произошло переполнение памяти при расчете кода операции");
+                            return -1;
+                        }
                     }
                     else {
                         size = parseInt(commandLine[1])*4+1;
+                        if (size > 255) {
+                            handleError("Произошло переполнение памяти при расчете кода операции");
+                            return -1;
+                        }
                         config.nastroikiText += `${config.ip}\n`;
                         document.querySelector("#nastroiki").value = config.nastroikiText;
                     }
@@ -98,6 +114,10 @@ export class CommandHandler {
                         return -1;
                     }
                     size = parseInt(commandLine[1])*4;
+                    if (size > 255) {
+                        handleError("Произошло переполнение памяти при расчете кода операции");
+                        return -1;
+                    }
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} ${isConvertibleToInteger(line[1]).toString(16).padStart(6, '0')}`;
                     config.ip = incrementHex(config.ip, 4);
                     if (config.ip == -1) {
@@ -138,6 +158,10 @@ export class CommandHandler {
                     return -1;
                 }
                 size = parseInt(commandLine[1])*4;
+                if (size > 255) {
+                    handleError("Произошло переполнение памяти при расчете кода операции");
+                    return -1;
+                }
                 stringToReturn = `T ${config.ip} 01 ${size.toString(16).padStart(2, '0')}`;
                 config.ip = incrementHex(config.ip, 1);
                 if (config.ip == -1) {
@@ -155,8 +179,12 @@ export class CommandHandler {
                         return -1;
                     }
                     size = parseInt(commandLine[1])*4;
+                    if (size > 255) {
+                        handleError("Произошло переполнение памяти при расчете кода операции");
+                        return -1;
+                    }
                     stringToReturn = `T ${config.ip} 02 ${size.toString(16).padStart(2, '0')} ${config.RtoVal[line[2]]} ${config.RtoVal[line[3]]}`;
-                    config.ip = incrementHex(config.ip, size);
+                    config.ip = incrementHex(config.ip, 2);
                     if (config.ip == -1) {
                         return -1;
                     }
@@ -170,6 +198,10 @@ export class CommandHandler {
                         return -1;
                     }
                     size = parseInt(commandLine[1])*4;
+                    if (size > 255) {
+                        handleError("Произошло переполнение памяти при расчете кода операции");
+                        return -1;
+                    }
                     stringToReturn = `T ${config.ip} 02 ${size.toString(16).padStart(2, '0')} ${isConvertibleToInteger(line[2]).toString(16).padStart(2, '0')}`;
                     config.ip = incrementHex(config.ip, 2);
                     if (config.ip == -1) {
@@ -200,10 +232,18 @@ export class CommandHandler {
                 }
                 if (isvalid) {
                     if (line[2][0] == "[") {
-                        size = parseInt(commandLine[1])*4+2;    
+                        size = parseInt(commandLine[1])*4+2;  
+                        if (size > 255) {
+                            handleError("Произошло переполнение памяти при расчете кода операции");
+                            return -1;
+                        }  
                     }
                     else {
                         size = parseInt(commandLine[1])*4+1;
+                        if (size > 255) {
+                            handleError("Произошло переполнение памяти при расчете кода операции");
+                            return -1;
+                        }
                         config.nastroikiText += `${config.ip}\n`;
                         document.querySelector("#nastroiki").value = config.nastroikiText;
                     }
@@ -218,6 +258,10 @@ export class CommandHandler {
                         return -1;
                     }
                     size = parseInt(commandLine[1])*4;
+                    if (size > 255) {
+                        handleError("Произошло переполнение памяти при расчете кода операции");
+                        return -1;
+                    }
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} ${isConvertibleToInteger(line[2]).toString(16).padStart(6, '0')}`;
                     config.ip = incrementHex(config.ip, 4);
                     if (config.ip == -1) {

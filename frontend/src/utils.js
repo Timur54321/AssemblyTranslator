@@ -24,7 +24,7 @@ export function handleError(message, second = false) {
 
         setTimeout(() => {
             document.querySelector("#errors_block_2").classList.remove('error-animation');
-        }, 500)
+        }, 500);
     }
     else {
         document.querySelector("#errors_block_1").value = message;
@@ -37,8 +37,8 @@ export function handleError(message, second = false) {
 }
 
 export function clearTables() {
-    for (let i = 0; i < 11; i++) {
-        for(let j = 0; j < 2; j++) {
+    for (let i = 0; i < 21; i++) {
+        for(let j = 0; j < 3; j++) {
             document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
         }
     }
@@ -87,7 +87,7 @@ export function handleString(line, config) {
             return stringToReturn;
         }
 
-        handleError("Переполнение памяти");
+        handleError(`Переполнение памяти в строке ${line.join(" ")}`);
         return -1;
     } else {
         if (line[2][0] == "C") {

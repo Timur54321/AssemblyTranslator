@@ -111,6 +111,7 @@ function executeLine() {
             // TODO: Write ouput handler 
             outputHandler.printTsiTable(config);
             outputHandler.pushLine(result, config);
+            outputHandler.printTsiTable(config);
 
             config.counter++;
         }

@@ -20,9 +20,25 @@ export class OutputHandler {
     }
 
     printTsiTable(config) {
+        for (let i = 0; i < 21; i++) {
+            for(let j = 0; j < 3; j++) {
+                document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
+            }
+        }
+        let startPos = 0;
         for (let i = 0; i < config.currentTsiNames.length; i++) {
             document.querySelector(`.tsi_cell_${i+1}_1`).value = config.currentTsiNames[i][0];
             document.querySelector(`.tsi_cell_${i+1}_2`).value = config.currentTsiNames[i][1];
+
+            if (i+1 == config.currentTsiNames.length) {
+                startPos = i+1;
+            }
+        }
+
+        for (let i = 0; i < config.toDisplay.length; i++) {
+            document.querySelector(`.tsi_cell_${i+1+startPos}_1`).value = config.toDisplay[i][0];
+            document.querySelector(`.tsi_cell_${i+1+startPos}_2`).value = config.toDisplay[i][1];
+            document.querySelector(`.tsi_cell_${i+1+startPos}_3`).value = config.toDisplay[i][2];
         }
     }
 
@@ -40,6 +56,7 @@ export class OutputHandler {
                 }
             });
             if (foundElement) {
+                config.toDisplay = config.toDisplay.filter(el => el[0] != foundElement[0]);
                 let ind = this.suspiciousValues[i].ind;
                 if (mode == 1) {
                     this.allLines[ind][this.allLines[ind].length-1] = foundElement[1];
@@ -75,13 +92,18 @@ export class OutputHandler {
                         ind: this.currentLine,
                         value: splitLine
                     });
+                    config.toDisplay.push([splitLine, "FFFFFF", printLine[1]]);
+                    
                 } else {
                     this.suspiciousValues.push({
                         ind: this.currentLine,
                         value: splitLine.substring(1, splitLine.length-1),
                         ip: printLine[1],
                     });
+                    config.toDisplay.push([splitLine.substring(1, splitLine.length-1), "FFFFFF", printLine[1]]);
+                    
                 }
+
                 printLine = line.split(' ');
                 printLine.pop();
                 printLine.push("FFFFFF");
