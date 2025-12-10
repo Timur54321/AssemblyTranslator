@@ -76,7 +76,14 @@ export class CommandHandler {
                     isvalid = (isValidMetkaName(line[1], config)) || (line[1][0] == "[" && isValidMetkaName(line[1].substring(1, line[1].length-1), config) && line[1][line[1].length-1] == "]");
                 }
                 if (isvalid) {
-                    size = parseInt(commandLine[1])*4+1;
+                    if (line[1][0] == "[") {
+                        size = parseInt(commandLine[1])*4+2;
+                    }
+                    else {
+                        size = parseInt(commandLine[1])*4+1;
+                        config.nastroikiText += `${config.ip}\n`;
+                        document.querySelector("#nastroiki").value = config.nastroikiText;
+                    }
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} METKA${line[1]}`;
                     config.ip = incrementHex(config.ip, 4);
                     if (config.ip == -1) {
@@ -192,7 +199,14 @@ export class CommandHandler {
                     isvalid = (isValidMetkaName(line[2], config)) || (line[2][0] == "[" && isValidMetkaName(line[2].substring(1, line[2].length-1), config) && line[2][line[2].length-1] == "]");
                 }
                 if (isvalid) {
-                    size = parseInt(commandLine[1])*4+1;
+                    if (line[2][0] == "[") {
+                        size = parseInt(commandLine[1])*4+2;    
+                    }
+                    else {
+                        size = parseInt(commandLine[1])*4+1;
+                        config.nastroikiText += `${config.ip}\n`;
+                        document.querySelector("#nastroiki").value = config.nastroikiText;
+                    }
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} METKA${line[2]}`;
                     config.ip = incrementHex(config.ip, 4);
                     if (config.ip == -1) {

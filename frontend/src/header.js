@@ -8,7 +8,6 @@ JMP L1
 A1 RESB 10
 A2 RESW 20
 B1 WORD 4096
-B2 BYTE X"2F4C008A"
 B3 BYTE C"Hello!"
 B4 BYTE 128
 L1 LOADR1 B1
@@ -26,7 +25,6 @@ JMP [L1]
 A1 RESB 10
 A2 RESW 20
 B1 WORD 4096
-B2 BYTE X"2F4C008A"
 B3 BYTE C"Hello!"
 B4 BYTE 128
 L1 LOADR1 [B1]
@@ -44,7 +42,6 @@ JMP [L1]
 A1 RESB 10
 A2 RESW 20
 B1 WORD 4096
-B2 BYTE X"2F4C008A"
 B3 BYTE C"Hello!"
 B4 BYTE 128
 L1 LOADR1 B1
@@ -82,6 +79,7 @@ END`;
     constructor() {
         this.programName = "";
         this.programStart = null;
+        this.nastroikiText = "";
         this.ip = 0;
         this.counter = 0;            // lines been read
         this.tsiCounter = 0;
@@ -132,6 +130,7 @@ END`;
         this.currentUserCode = null;
         this.currentOperTable = null;
         this.finished = false;
+        this.nastroikiText = "";
     }
 
 }

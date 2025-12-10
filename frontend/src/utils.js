@@ -45,6 +45,7 @@ export function clearTables() {
 
     document.querySelector("#errors_block_1").value = "";
     document.querySelector("#final_code").value = "";
+    document.querySelector("#nastroiki").value = "";
 }
 
 export function isConvertibleToInteger(str) {

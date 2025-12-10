@@ -8,6 +8,7 @@ export class OutputHandler {
         this.currentLine = 0;
         this.allLines = [];
         this.used = [];
+        this.mks = [];
     }
 
     reset() {
@@ -15,6 +16,7 @@ export class OutputHandler {
         this.currentLine = 0;
         this.allLines = [];
         this.used = [];
+        this.mks = [];
     }
 
     printTsiTable(config) {
@@ -64,6 +66,7 @@ export class OutputHandler {
             else {
                 this.used.push(splitLine);
                 search = config.currentTsiNames.find(el => el[0] == splitLine);
+                this.mks.push(printLine[1]);
             }
 
             if (!search) {
@@ -124,6 +127,9 @@ export class OutputHandler {
     }
 
     pushLastLine(config) {
+        for (let i = 0; i < this.mks.length; i++) {
+            this.allLines.push(['M', `${this.mks[i]}`]);
+        }
         this.allLines.push(['E', `${config.programStart.toString(16).padStart(6, '0')}`]);
         let size = decrementHex(config.ip, config.programStart);
         this.allLines[0].push(size.toString(16).padStart(6, '0'));

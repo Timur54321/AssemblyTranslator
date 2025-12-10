@@ -30,13 +30,16 @@ export class RowHandler {
 
         // 3) Check if third value exists and equals to Integer (0-16777542)
         let programStart = isConvertibleToInteger(line[2]);
-        if (programStart == 0 || line[2] == undefined) {
+        console.log(programStart);
+        if (programStart === 0 || line[2] == undefined) {
             config.programStart = 0;
         }
         else {
-            handleError("Некорректно задан адрес начала программы");
+            handleError("Некорректно задан адрес начала программы. Адрес начала программы при относительной адресации должен начинаться с нуля.");
             return -1;
         }
+
+        
 
         config.programName = line[0];
         config.ip = "000000";
