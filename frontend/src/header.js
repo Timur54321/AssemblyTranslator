@@ -56,6 +56,7 @@ END`;
     secondButton = document.querySelector("#second_gothrough");
     circle = document.querySelector(".circle");
     menu = document.querySelector("#adressFormat");
+    tsiBlock = document.querySelector("#tsiText");
 
     RtoVal = {
         "R1": "0",

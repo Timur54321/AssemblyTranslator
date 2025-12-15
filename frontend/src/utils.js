@@ -36,12 +36,13 @@ export function handleError(message, second = false) {
     }
 }
 
-export function clearTables() {
-    for (let i = 0; i < 21; i++) {
-        for(let j = 0; j < 3; j++) {
-            document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
-        }
-    }
+export function clearTables(config) {
+    // for (let i = 0; i < 21; i++) {
+    //     for(let j = 0; j < 3; j++) {
+    //         // document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
+    //     }
+    // }
+    config.tsiBlock.value = "";
 
     document.querySelector("#errors_block_1").value = "";
     document.querySelector("#final_code").value = "";

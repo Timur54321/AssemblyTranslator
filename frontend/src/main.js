@@ -25,13 +25,13 @@ config.firstButton.addEventListener("click", () => {
 config.secondButton.addEventListener("click", () => {
     config.reset();
     outputHandler.reset();
-    clearTables();
+    clearTables(config);
 });
 
 config.circle.addEventListener("click", () => {
     config.reset();
     outputHandler.reset();
-    clearTables();
+    clearTables(config);
     config.currentUserCode = tableReader.readUserCode();
     config.currentOperTable = tableReader.raedCommandTable(config);
 
@@ -70,7 +70,7 @@ function executeLine() {
         return;
     }
     if (config.counter == 0) {
-        clearTables();
+        clearTables(config);
         let result = rowHandler.isValidStartLine(config);
         if (result == -1) {
             config.reset();

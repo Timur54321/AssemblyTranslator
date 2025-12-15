@@ -20,15 +20,18 @@ export class OutputHandler {
     }
 
     printTsiTable(config) {
+        let resultString = "";
         for (let i = 0; i < 21; i++) {
             for(let j = 0; j < 3; j++) {
-                document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
+                // document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
+                config.tsiBlock.value = "";
             }
         }
         let startPos = 0;
         for (let i = 0; i < config.currentTsiNames.length; i++) {
-            document.querySelector(`.tsi_cell_${i+1}_1`).value = config.currentTsiNames[i][0];
-            document.querySelector(`.tsi_cell_${i+1}_2`).value = config.currentTsiNames[i][1];
+            // document.querySelector(`.tsi_cell_${i+1}_1`).value = config.currentTsiNames[i][0];
+            // document.querySelector(`.tsi_cell_${i+1}_2`).value = config.currentTsiNames[i][1];
+            resultString += `${config.currentTsiNames[i][0].padEnd(8, ' ')} ${config.currentTsiNames[i][1].padEnd(8, ' ')}\n`;
 
             if (i+1 == config.currentTsiNames.length) {
                 startPos = i+1;
@@ -36,10 +39,13 @@ export class OutputHandler {
         }
 
         for (let i = 0; i < config.toDisplay.length; i++) {
-            document.querySelector(`.tsi_cell_${i+1+startPos}_1`).value = config.toDisplay[i][0];
-            document.querySelector(`.tsi_cell_${i+1+startPos}_2`).value = config.toDisplay[i][1];
-            document.querySelector(`.tsi_cell_${i+1+startPos}_3`).value = config.toDisplay[i][2];
+            // document.querySelector(`.tsi_cell_${i+1+startPos}_1`).value = config.toDisplay[i][0];
+            // document.querySelector(`.tsi_cell_${i+1+startPos}_2`).value = config.toDisplay[i][1];
+            // document.querySelector(`.tsi_cell_${i+1+startPos}_3`).value = config.toDisplay[i][2];
+            resultString += `${config.toDisplay[i][0].padEnd(8, ' ')} ${config.toDisplay[i][1].padEnd(8, ' ')} ${config.toDisplay[i][2].padEnd(8, ' ')}\n`;
         }
+
+        config.tsiBlock.value = resultString;
     }
 
     checkSuspicious(config) {
