@@ -2,7 +2,7 @@ import { handleError } from "./utils";
 
 export function incrementHex(hexString, increment) {
     if (typeof hexString !== 'string' || !/^[0-9A-Fa-f]+$/.test(hexString)) {
-        handleError("Некорректно задан адрес начала программы");
+        handleError("Произошло переполнение памяти");
         return -1;
     }
     

@@ -6,6 +6,61 @@ export class DirectiveHandler {
         let splitLine = line;
         let currentDirective;
         let size, stringToReturn;
+
+        if (splitLine[0].toUpperCase() == "EXTDEF") {
+            if (config.order != "EXTDEF") {
+                handleError("Нарушена структура кода. Пожалуйста придерживайтесь правила EXTDEF -> EXTREF -> основной код");
+                return -1;
+            }
+            if (!isValidMetkaName(splitLine[1], config)) {
+                handleError(`Некорректно задана метка ${splitLine[1]}`);
+                return -1;
+            }
+
+            if (splitLine[2]) {
+                handleError(`Указан лишний операнд ${splitLine[2]}`);
+                return -1;
+            }
+
+            if (config.currentExtDefs.includes(splitLine[1])) {
+                handleError(`Метка ${splitLine[1]} уже помечено как внешнее имя`);
+                return -1;
+            }
+
+            config.currentExtDefs.push(splitLine[1]);
+            return `D ${splitLine[1]} FFFFFF`;
+        }
+
+        if (splitLine[0].toUpperCase() == "EXTREF") {
+            if (config.order == "CODE") {
+                handleError("Нарушена структура кода. Пожалуйста придерживайтесь правила EXTDEF -> EXTREF -> основной код");
+                return -1;
+            }
+            config.order = "EXTREF";
+            if (!isValidMetkaName(splitLine[1], config)) {
+                handleError(`Некорректно задана метка ${splitLine[1]}`);
+                return -1;
+            }
+
+            if (splitLine[2]) {
+                handleError(`Указан лишний операнд ${splitLine[2]}`);
+                return -1;
+            }
+
+            if (config.currentExtDefs.includes(splitLine[1])) {
+                handleError(`Не допускаются одинаковые имена внешних имен и внешних ссылок, проверьте ${splitLine[1]}`);
+                return -1;
+            }
+            if (config.currentExtRefs.includes(splitLine[1])) {
+                handleError(`Внешняя ссылка ${splitLine[1]} уже была объявлена`);
+                return -1;
+            }
+
+            config.currentExtRefs.push(splitLine[1]);
+            config.currentTsiNames.push([splitLine[1], "000000"]);
+            return `R ${splitLine[1]}`;
+        }
+
         if (splitLine[0]?.toUpperCase() == "RESB" || splitLine[1]?.toUpperCase() == "RESB") currentDirective = "RESB";
         else currentDirective = "RESW";
 

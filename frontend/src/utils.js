@@ -8,11 +8,28 @@ export function isValidMetkaName(str, config) {
     
     const name = str.trim();    
     
+    if (config.RtoVal[name] || config.directives.includes(name.toUpperCase()) || config.dataTypes.includes(name.toUpperCase()) || config.currentOperTable.some(el => el[0].toUpperCase() == str)) {
+        return false;
+    }
+    
+    const identifierRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/; 
+    
+    return identifierRegex.test(name);
+}
+
+export function isValidCommandName(str, config) {
+    if (str[0] == "$") return false;
+    if (typeof str !== 'string' || str.trim() === '') {
+        return false;
+    }
+    
+    const name = str.trim();    
+    
     if (config.RtoVal[name] || config.directives.includes(name.toUpperCase()) || config.dataTypes.includes(name.toUpperCase())) {
         return false;
     }
     
-    const identifierRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+    const identifierRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/; 
     
     return identifierRegex.test(name);
 }

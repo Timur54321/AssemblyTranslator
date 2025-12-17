@@ -9,6 +9,8 @@ export class OutputHandler {
         this.allLines = [];
         this.used = [];
         this.mks = [];
+        this.localStart = 0;
+        this.tsiOld = "";
     }
 
     reset() {
@@ -17,10 +19,18 @@ export class OutputHandler {
         this.allLines = [];
         this.used = [];
         this.mks = [];
+        this.localStart = 0;
+        this.tsiOld = "";
+    }
+
+    subtleReset() {
+        this.suspiciousValues = [];
+        this.used = [];
+        this.mks = [];
     }
 
     printTsiTable(config) {
-        let resultString = "";
+        let resultString = this.tsiOld;
         for (let i = 0; i < 21; i++) {
             for(let j = 0; j < 3; j++) {
                 // document.querySelector(`.tsi_cell_${i+1}_${j+1}`).value = "";
@@ -31,7 +41,10 @@ export class OutputHandler {
         for (let i = 0; i < config.currentTsiNames.length; i++) {
             // document.querySelector(`.tsi_cell_${i+1}_1`).value = config.currentTsiNames[i][0];
             // document.querySelector(`.tsi_cell_${i+1}_2`).value = config.currentTsiNames[i][1];
-            resultString += `${config.currentTsiNames[i][0].padEnd(8, ' ')} ${config.currentTsiNames[i][1].padEnd(8, ' ')}\n`;
+            if (config.currentExtRefs.some(el => el == config.currentTsiNames[i][0])) continue;
+            let toAdd = "";
+            if (config.currentExtDefs.some(el => el == config.currentTsiNames[i][0])) toAdd = "ВИ";
+            resultString += `${config.currentTsiNames[i][0].padEnd(6, ' ')} ${toAdd.padEnd(6, ' ')} ${config.currentTsiNames[i][1].padEnd(10, ' ')} ${config.programName.padEnd(6, ' ')}\n`;
 
             if (i+1 == config.currentTsiNames.length) {
                 startPos = i+1;
@@ -42,7 +55,10 @@ export class OutputHandler {
             // document.querySelector(`.tsi_cell_${i+1+startPos}_1`).value = config.toDisplay[i][0];
             // document.querySelector(`.tsi_cell_${i+1+startPos}_2`).value = config.toDisplay[i][1];
             // document.querySelector(`.tsi_cell_${i+1+startPos}_3`).value = config.toDisplay[i][2];
-            resultString += `${config.toDisplay[i][0].padEnd(8, ' ')} ${config.toDisplay[i][1].padEnd(8, ' ')} ${config.toDisplay[i][2].padEnd(8, ' ')}\n`;
+            let toAdd = "";
+            if (config.currentExtDefs.some(el => el == config.toDisplay[i][0])) toAdd = "ВИ";
+            if (config.currentExtRefs.some(el => el == config.toDisplay[i][0])) toAdd = "ВС";
+            resultString += `${config.toDisplay[i][0].padEnd(6, ' ')} ${toAdd.padEnd(6, ' ')} ${config.toDisplay[i][1].padEnd(10, ' ')} ${config.toDisplay[i][2].padEnd(6, ' ')} ${config.toDisplay[i][3] ? config.toDisplay[i][3].padEnd(6, ' ') : ""}\n`;
         }
 
         config.tsiBlock.value = resultString;
@@ -89,7 +105,7 @@ export class OutputHandler {
             else {
                 this.used.push(splitLine);
                 search = config.currentTsiNames.find(el => el[0] == splitLine);
-                this.mks.push(printLine[1]);
+                this.mks.push([printLine[1], config.currentExtRefs.find(el => el == splitLine)]);
             }
 
             if (!search) {
@@ -98,7 +114,7 @@ export class OutputHandler {
                         ind: this.currentLine,
                         value: splitLine
                     });
-                    config.toDisplay.push([splitLine, "FFFFFF", printLine[1]]);
+                    config.toDisplay.push([splitLine, "FFFFFF", config.programName, printLine[1]]);
                     
                 } else {
                     this.suspiciousValues.push({
@@ -106,7 +122,7 @@ export class OutputHandler {
                         value: splitLine.substring(1, splitLine.length-1),
                         ip: printLine[1],
                     });
-                    config.toDisplay.push([splitLine.substring(1, splitLine.length-1), "FFFFFF", printLine[1]]);
+                    config.toDisplay.push([splitLine.substring(1, splitLine.length-1), "FFFFFF", config.programName, printLine[1]]);
                     
                 }
 
@@ -125,6 +141,23 @@ export class OutputHandler {
                 }
             }
         }
+
+        if (line.startsWith("D ")) {
+            this.used.push(line.split(" ")[1]);
+            this.suspiciousValues.push({
+                ind: this.currentLine,
+                value: line.split(" ")[1]
+            });
+            console.log([line.split(" ")[1], "FFFFFF", config.programName]);
+            config.toDisplay.push([line.split(" ")[1], "FFFFFF", config.programName]);
+        }
+        else if (line.startsWith("R ")) {
+            console.log([line.split(" ")[1], "FFFFFF", config.programName]);
+            config.toDisplay.push([line.split(" ")[1], "", config.programName]);
+        } else {
+            config.order = "CODE";
+        }
+
         this.checkSuspicious(config);
         this.allLines.push(printLine);
         this.printLines();
@@ -140,9 +173,15 @@ export class OutputHandler {
         document.querySelector("#final_code").value = resultString;
     }
 
-    checkStats(currentTsiNames) {
-        if (this.used.some(el => !currentTsiNames.some(val => val[0] == el))) {
-            handleError("Не для всех меток было присвоено значение");
+    checkStats(currentTsiNames, currentExtDefs) {
+        let ourValue = this.used.find(el => !currentTsiNames.some(val => val[0] == el))
+        if (ourValue) {
+            console.log(ourValue);
+            if (currentExtDefs.includes(ourValue)) {
+                handleError(`Для внешнего имени ${ourValue} не было определения`);
+            } else {
+                handleError(`Не для всех меток было присвоено значение. Проверьте ${ourValue}`);
+            }
             return -1;
         }
         return "success";
@@ -156,11 +195,15 @@ export class OutputHandler {
 
     pushLastLine(config) {
         for (let i = 0; i < this.mks.length; i++) {
-            this.allLines.push(['M', `${this.mks[i]}`]);
+            this.allLines.push(['M', `${this.mks[i][0]} ${this.mks[i][1] ? this.mks[i][1] : ""}`]);
+            this.currentLine++;
         }
-        this.allLines.push(['E', `${config.programStart.toString(16).padStart(6, '0')}`]);
+        this.allLines.push(['E', `${config.programStart.toString(16).padStart(6, '0')}\n`]);
+        this.currentLine+=1;
+        this.tsiOld = config.tsiBlock.value;
         let size = decrementHex(config.ip, config.programStart);
-        this.allLines[0].push(size.toString(16).padStart(6, '0'));
+        this.allLines[this.localStart].push(size.toString(16).padStart(6, '0'));
+        this.localStart = this.currentLine;
         this.printLines();
     }
 }

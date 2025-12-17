@@ -30,7 +30,7 @@ export class RowHandler {
 
         // 3) Check if third value exists and equals to Integer (0-16777542)
         let programStart = isConvertibleToInteger(line[2]);
-        console.log(programStart);
+        
         if (programStart === 0 || line[2] == undefined) {
             config.programStart = 0;
         }
@@ -39,10 +39,9 @@ export class RowHandler {
             return -1;
         }
 
-        
-
         config.programName = line[0];
         config.ip = "000000";
+        config.usedProgramNames.push(config.programName);
         return `H ${line[0]} ${programStart}`;
     }
 
@@ -51,6 +50,19 @@ export class RowHandler {
         if (line[0]?.toUpperCase() == "START" || line[1]?.toUpperCase() == "START") {
             handleError(`Директива START была указана более одного раза`);
             return -1;
+        }
+
+        if (line[1]?.toUpperCase() == "CSECT") {
+            if (!isValidMetkaName(line[0], config)) {
+                handleError(`Некорректно задано имя управляющей секции ${line[0]}`);
+                return -1;
+            }
+            if (line[2]) {
+                handleError(`Указан лишний операнд ${line[2]}`);
+                return -1;
+            }
+
+            return `${line[0]} CSECT`;
         }
 
         let commandAsFirstValue = config.currentOperTable.find(el => el[0] == line[0]);

@@ -85,6 +85,11 @@ export class CommandHandler {
                 }
                 if (isvalid) {
                     if (line[1][0] == "[") {
+                        let potentialThreat = config.currentExtRefs.find(el => el == line[1].substring(1, line[1].length-1));
+                        if (potentialThreat) {
+                            handleError(`Для вншней ссылки ${potentialThreat} не допускается относительная адресация`);
+                            return -1;
+                        }
                         size = parseInt(commandLine[1])*4+2;
                         if (size > 255) {
                             handleError("Произошло переполнение памяти при расчете кода операции");
@@ -97,7 +102,9 @@ export class CommandHandler {
                             handleError("Произошло переполнение памяти при расчете кода операции");
                             return -1;
                         }
-                        config.nastroikiText += `${config.ip}\n`;
+                        let toAdd = "";
+                        if (config.currentExtRefs.some(el => el == line[1])) toAdd = line[1];
+                        config.nastroikiText += `${config.ip.padEnd(8, ' ')} ${toAdd.padEnd(6, ' ')} ${config.programName.padEnd(6, ' ')}\n`;
                         document.querySelector("#nastroiki").value = config.nastroikiText;
                     }
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} METKA${line[1]}`;
@@ -232,6 +239,11 @@ export class CommandHandler {
                 }
                 if (isvalid) {
                     if (line[2][0] == "[") {
+                        let potentialThreat = config.currentExtRefs.find(el => el == line[1].substring(1, line[1].length-1));
+                        if (potentialThreat) {
+                            handleError(`Для вншней ссылки ${potentialThreat} не допускается относительная адресация`);
+                            return -1;
+                        }
                         size = parseInt(commandLine[1])*4+2;  
                         if (size > 255) {
                             handleError("Произошло переполнение памяти при расчете кода операции");
@@ -244,7 +256,9 @@ export class CommandHandler {
                             handleError("Произошло переполнение памяти при расчете кода операции");
                             return -1;
                         }
-                        config.nastroikiText += `${config.ip}\n`;
+                        let toAdd = "";
+                        if (config.currentExtRefs.some(el => el == line[2])) toAdd = line[2];
+                        config.nastroikiText += `${config.ip.padEnd(8, ' ')} ${toAdd.padEnd(6, ' ')} ${config.programName.padEnd(6, ' ')}\n`;
                         document.querySelector("#nastroiki").value = config.nastroikiText;
                     }
                     stringToReturn = `T ${config.ip} 04 ${size.toString(16).padStart(2, '0')} METKA${line[2]}`;

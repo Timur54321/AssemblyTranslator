@@ -19,7 +19,10 @@ config.firstButton.addEventListener("click", () => {
         return;
     }
 
-    executeLine();
+    let result = executeLine();
+    if (result == -1) {
+        config.finished = true;
+    }
 });
 
 config.secondButton.addEventListener("click", () => {
@@ -90,7 +93,7 @@ function executeLine() {
             return -1;
         }
         if (config.currentUserCode[config.counter][0]?.toUpperCase() == "END") {
-            let result = outputHandler.checkStats(config.currentTsiNames);
+            let result = outputHandler.checkStats(config.currentTsiNames, config.currentExtDefs);
             if (result == -1) {
                 config.reset();
                 outputHandler.reset();
@@ -109,9 +112,29 @@ function executeLine() {
             }
 
             // TODO: Write ouput handler 
-            outputHandler.printTsiTable(config);
-            outputHandler.pushLine(result, config);
-            outputHandler.printTsiTable(config);
+            if (result.split(" ")[1].toUpperCase() == "CSECT") {
+                let statsGood = outputHandler.checkStats(config.currentTsiNames, config.currentExtDefs);
+                if (statsGood == -1) {
+                    config.reset();
+                    outputHandler.reset();
+                    return -1;
+                }
+                if (config.usedProgramNames.some(el => el == result.split(" ")[0])) {
+                    handleError(`Имена секций должны быть уникальными, проверьте ${result.split(" ")[0]}`);
+                    return -1;
+                }
+                config.programName = result.split(" ")[0];
+                config.usedProgramNames.push(config.programName);
+                outputHandler.pushLastLine(config);
+                outputHandler.pushFirstLine(config.programName, config.programStart);
+                config.subtleReset();
+                outputHandler.subtleReset();
+
+            } else {
+                outputHandler.printTsiTable(config);
+                outputHandler.pushLine(result, config);
+                outputHandler.printTsiTable(config);
+            }
 
             config.counter++;
         }

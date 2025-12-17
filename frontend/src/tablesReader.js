@@ -1,4 +1,4 @@
-import { handleError, isValidMetkaName } from "./utils";
+import { handleError, isValidCommandName, isValidMetkaName } from "./utils";
 import { isConvertibleToInteger } from "./utils";
 
 export class TablesReader {
@@ -18,7 +18,7 @@ export class TablesReader {
         for (let i = 0; i < conf.ocell_counter-1; i++) {
             let [first, second, third] = [document.querySelector(`.ocell_${i+1}_1`).value, document.querySelector(`.ocell_${i+1}_2`).value, document.querySelector(`.ocell_${i+1}_3`).value];
             if (first == "") continue;
-            if (!isValidMetkaName(first, conf)) {
+            if (!isValidCommandName(first, conf)) {
                 handleError(`Некорректно задано имя команды ${first}`);
                 return -1;
             }
